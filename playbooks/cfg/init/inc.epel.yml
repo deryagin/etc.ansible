@@ -1,0 +1,22 @@
+# Добавление epel репозитория для CentOS.
+
+  - name: copy /etc/yum.repos.d/ansible-bootstrap-epel.repo
+    copy:
+      src=ansible-bootstrap-epel.repo
+      dest=/etc/yum.repos.d/
+      owner=root
+      group=root
+      mode=0644
+  
+  - name: install epel repository
+    yum:
+      name=epel-release
+      enablerepo=ansible-bootstrap-epel
+      state=present
+  
+  - name: enable epel repository
+    ini_file:
+      dest=/etc/yum.repos.d/epel.repo
+      section=epel
+      option=enabled
+      value=1

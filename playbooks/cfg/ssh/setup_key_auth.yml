@@ -1,0 +1,29 @@
+# ansible-playbook ssh/setup_key_auth.yml -e 'hosts=192.168.50.1' --ask-pass -C --list-hosts
+# ansible-playbook ssh/setup_key_auth.yml -e 'hosts=nadavi.generator.example.com' --ask-pass -C --list-hosts
+# todo: сделать, чтобы можно было добавлять и удалять произвольные публичные ключи.
+
+- name: ADD KEY /root/.ssh/deploy.example.com.pub
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+        
+  tasks:
+  - name: install ssh public key /root/.ssh/deploy.example.com.pub
+    authorized_key:
+      user=root
+      key="{{ lookup('file', '/root/.ssh/deploy.example.com.pub') }}"
+
+  - name: copy config /etc/ssh/sshd_config
+    copy:
+      src=sshd_config
+      dest=/etc/ssh/sshd_config
+      backup=yes
+      validate='/usr/sbin/sshd -T -f %s'
+    notify:
+      - restart sshd
+
+  handlers:
+  - name: restart sshd
+    service:
+      name=sshd
+      state=restarted

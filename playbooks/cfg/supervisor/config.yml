@@ -1,0 +1,21 @@
+# ansible-playbook supervisor/config.yml -e 'hosts=ansible_test_nodes' -C 
+
+- name: INSTALL SUPEVISORD
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  vars_prompt:
+  - name: "cfg_path"
+    prompt: "enter full path fo local supervisord.conf"
+    private: no
+
+  tasks:
+  - name: copy /etc/supervisord.conf
+    copy: src={{cfg_path}} dest=/etc/supervisord.conf
+    notify: reload supervisord
+
+  handlers:
+  - name: reload supervisord
+    service: name=supervisord state=reloaded
+

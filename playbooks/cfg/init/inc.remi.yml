@@ -1,0 +1,22 @@
+# Добавление remi репозитория для CentOS.
+
+  - name: copy /etc/yum.repos.d/ansible-bootstrap-remi.repo
+    copy:
+      src=ansible-bootstrap-remi.repo
+      dest=/etc/yum.repos.d/
+      owner=root
+      group=root
+      mode=0644
+  
+  - name: install remi repository
+    yum:
+      name=remi-release
+      enablerepo=ansible-bootstrap-remi
+      state=present
+  
+  - name: enable remi repositry
+    ini_file:
+      dest=/etc/yum.repos.d/remi.repo
+      section=remi
+      option=enabled
+      value=1

@@ -1,0 +1,13 @@
+# Обновление системного софта. Установка софта для работы в shell.
+
+  - name: upgrade all packages
+    yum: name=* state=latest
+  
+  - name: make sure essential software is installed
+    yum: name={{ item }} state=installed
+    with_items:
+      - man
+      - zsh
+      - mc
+      - vim-enhanced
+      - git

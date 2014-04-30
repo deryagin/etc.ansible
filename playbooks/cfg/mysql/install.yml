@@ -1,0 +1,25 @@
+# ansible-playbook mysql/install.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: INSTALL MYSQL
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  vars_prompt:
+  - name: "mysql_root_password"
+    prompt: "enter mysql root password"
+    private: yes
+    #confirm: yes
+
+  tasks:
+  - name: install mysqld
+    yum: name=mysql-server enablerepo=remi state=installed
+  
+  - name: start mysqld
+    service: name=mysqld state=started
+  
+  - name: change root password
+    command: mysqladmin -u root password {{mysql_root_password}}
+  
+  - name: setup start mysqld on boot
+    command: /sbin/chkconfig mysqld on

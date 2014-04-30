@@ -1,0 +1,10 @@
+# ansible-playbook git/pull.yml -e 'hosts=ansible_test_nodes dest=/var/www/generator' -C
+
+- name: UPDATE (PULL) CURRENT GIT BRANCH
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: update current branch in {{dest}}
+    shell: cd {{dest}}; git pull --prune;

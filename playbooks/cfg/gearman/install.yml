@@ -1,0 +1,21 @@
+# ansible-playbook gearman/install.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: INSTALL GEARMAND
+  hosts: $hosts
+  remote_user: root
+
+  tasks:
+  - name: install gearmand
+    yum: name=gearmand state=installed
+
+  - name: install php-pecl-gearman
+    yum: name=php-pecl-gearman enablerepo=remi state=installed
+
+  - name: mkdir /var/log/gearmand
+    file: path=/var/log/gearmand state=directory owner=gearmand group=gearmand
+
+  - name: start gearmand
+    service: name=gearmand state=started
+  
+  - name: setup start gearmand on boot
+    command: /sbin/chkconfig gearmand on

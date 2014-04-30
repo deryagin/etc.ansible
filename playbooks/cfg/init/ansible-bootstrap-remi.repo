@@ -1,0 +1,6 @@
+[ansible-bootstrap-remi]
+name = Ansible bootstrap for remi
+mirrorlist = http://rpms.famillecollet.com/enterprise/$releasever/remi/mirror
+failovermethod = priority
+enabled = 0
+gpgcheck = 0

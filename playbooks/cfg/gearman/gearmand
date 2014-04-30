@@ -1,0 +1,11 @@
+### Settings for gearmand
+
+OPTIONS="--log-file=/var/log/gearmand/gearmand.log \
+#--queue-type=mysql \
+#--mysql-host=localhost \
+#--mysql-port=3306 \
+#--mysql-user=gearman \
+#--mysql-password=htNoKI \
+#--mysql-db=gearman \
+#--mysql-table=queue \
+--verbose=ERROR"

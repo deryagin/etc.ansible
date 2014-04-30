@@ -1,0 +1,11 @@
+# ansible-playbook init/setup.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: AFTER INSTALL SETUP
+  hosts: $hosts
+  remote_user: root
+
+  tasks:
+  - include: inc.timezone.yml
+  - include: inc.upgrade.yml
+  - include: inc.epel.yml
+  - include: inc.remi.yml

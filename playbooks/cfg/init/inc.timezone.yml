@@ -1,0 +1,4 @@
+# Установка временной зоны.
+
+  - name: setup timezone
+    shell: rm -rf /etc/localtime; ln -s /usr/share/zoneinfo/Europe/Moscow /etc/localtime

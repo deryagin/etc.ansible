@@ -1,0 +1,23 @@
+# ansible-playbook mysql/backuper.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: GRANT backuper USER
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  vars_prompt:
+  - name: mysql_root_password
+    prompt: enter mysql root password
+    private: yes
+
+  tasks:
+  - name: install MySQL-python (need for ansible)
+    yum: name=MySQL-python state=installed
+
+  - name: grant user backuper@localhost
+    mysql_user:
+      login_user=root
+      login_password={{mysql_root_password}}
+      name=backuper
+      password=7sWwpag
+      priv=*.*:SELECT state=present

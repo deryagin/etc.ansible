@@ -1,0 +1,20 @@
+# ansible-playbook php/install.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: INSTALL PHP
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: install php and php additional modules
+    yum: name={{ item }} enablerepo=remi state=installed
+    with_items:
+      - php
+      - php-pear
+      - php-mysql
+      - php-mbstring
+      - php-pecl-memcache
+      - php-pecl-zendopcache
+      - php-process
+      - php-soap
+      - php-xml

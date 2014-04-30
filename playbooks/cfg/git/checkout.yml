@@ -1,0 +1,10 @@
+# ansible-playbook git/checkout.yml -e 'hosts=ansible_test_nodes repo=/var/www/generator branch=v.2013-12-23' -C
+
+- name: CHECKOUT GIT BRANCH, TAG OR COMMIT
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: git checkout {{branch}}
+    shell: cd {{repo}}; git checkout {{branch}}

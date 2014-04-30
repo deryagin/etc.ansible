@@ -1,0 +1,23 @@
+# ansible-playbook git/clone.yml -e 'hosts=ansible_test_nodes url=https://username@bitbucket.org/username/adgenerator.git dest=/var/www/generator' -C
+
+- name: CLONE GIT REPOSITORY
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  vars_prompt:
+  - name: password
+    prompt: enter git-user password
+    private: yes
+
+  vars:
+    repo: $PIPE("echo {{ url }} | sed 's/@/:{{ password }}@/'")
+
+  tasks:
+  - name: check if {{dest}}/.git does not exists
+    stat: path={{dest}}/.git
+    register: destination
+
+  - name: git clone {{url}}
+    git: repo={{repo}} dest={{dest}}
+    when: destination.stat.exists == false

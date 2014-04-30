@@ -1,0 +1,29 @@
+# ansible-playbook apache/install.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: INSTALL APACHE
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: install httpd
+    yum: name=httpd enablerepo=remi state=installed
+  
+  - name: mkdir /etc/httpd/sites-available
+    file: path=/etc/httpd/sites-available state=directory
+  
+  - name: mkdir /etc/httpd/sites-enabled
+    file: path=/etc/httpd/sites-enabled state=directory
+  
+  # todo: конфиг подходит для apache 2.2, поэтому нужно проверять версию apache!
+  - name: copy /etc/httpd/conf/httpd.conf (with virtual hosting setups)
+    copy: src=httpd.conf dest=/etc/httpd/conf force=yes backup=yes
+
+  - name: remove junk from /var/www/
+    shell: rm -rf /var/www/*
+
+  - name: restart httpd
+    service: name=httpd state=restarted
+  
+  - name: setup start httpd on boot
+    command: chkconfig httpd on

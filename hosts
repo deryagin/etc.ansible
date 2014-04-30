@@ -1,0 +1,29 @@
+127.0.0.1
+localhost
+
+[production:children]
+generators
+optimizers
+
+[generators]
+197-test.deploy.example.com		ansible_ssh_host=192.168.50.47
+198-test.deploy.example.com		ansible_ssh_host=192.168.50.48
+
+[optimizers]
+197-test.deploy.example.com		ansible_ssh_host=192.168.50.47
+198-test.deploy.example.com		ansible_ssh_host=192.168.50.48
+
+[templates]
+tmpl.generator.example.com		ansible_ssh_host=192.168.50.15
+tmpl.optimizator.example.com   	ansible_ssh_host=192.168.50.16
+
+[openvz_host_nodes]
+144.76.167.7
+148.251.43.213
+
+[backups]
+backup.example.com              ansible_ssh_host=192.168.50.23
+
+[ansible_test_nodes]
+197-test.deploy.example.com		ansible_ssh_host=192.168.50.47
+198-test.deploy.example.com		ansible_ssh_host=192.168.50.48

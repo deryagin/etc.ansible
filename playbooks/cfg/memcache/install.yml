@@ -1,0 +1,16 @@
+# ansible-playbook memcache/install.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: INSTALL MEMCACHE
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: install memcached
+    yum: name=memcached enablerepo=remi state=installed
+  
+  - name: start memcached
+    service: name=memcached state=started
+  
+  - name: setup start memcached on boot
+    command: /sbin/chkconfig memcached on

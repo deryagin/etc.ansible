@@ -1,0 +1,35 @@
+# ansible-playbook supervisor/install.yml -e 'hosts=ansible_test_nodes' -C 
+
+- name: INSTALL SUPEVISORD
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: install python-pip
+    yum: name=python-pip state=installed
+  
+  - name: install setuptools
+    shell: wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | python
+  
+  - name: install supervisord
+    shell: pip install supervisor
+
+  - name: add user supervisor:supervisor
+    user: name=supervisor createhome=no shell=/sbin/nologin
+
+  - name: mkdir /var/run/supervisor
+    file: path=/var/run/supervisor state=directory owner=supervisor group=supervisor
+    
+  - name: mkdir /var/log/supervisor
+    file: path=/var/log/supervisor state=directory owner=supervisor group=supervisor
+    
+    # Справедливоо для версии 3.0. По-нормальному нужно проверять версию и если она отличается, выдавать ошибку.
+  - name: copy /etc/init.d/supervisord
+    copy: src=supervisord dest=/etc/init.d/supervisord mode=0755
+
+  - name: start supervisord
+    service: name=supervisord state=started
+
+  - name: setup start supervisord on boot
+    command: /sbin/chkconfig supervisord on

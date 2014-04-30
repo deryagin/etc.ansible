@@ -1,0 +1,11 @@
+# ansible-playbook rsync/copy.yml -e 'hosts=ansible_test_nodes src=/path/to/source dest=/path/to/target/' -C
+
+- name: COPY DIRECTORY AND FILE STRUCTURE
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - debug: msg="rsync -a {{src}} {{ansible_ssh_host}}:{{dest}}"
+  - name: recursively copy files from deploy server to target
+    command: rsync -a {{src}} {{ansible_ssh_host}}:{{dest}}

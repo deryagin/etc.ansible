@@ -1,0 +1,29 @@
+# ansible-playbook mysql/source.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: RUN SQL SCRIPT
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  vars_prompt:
+  - name: mysql_root_password
+    prompt: enter mysql root password
+    private: yes
+
+  - name: script_path
+    prompt: enter sql script name
+    private: no
+
+  vars:
+    base_name: "{{script_path | basename}}"
+    remote_name: "/tmp/{{base_name}}"
+
+  tasks:
+  - name: copy {{base_name}} to remotes
+    copy: src={{script_path}} dest={{remote_name}}
+
+  - name: run {{base_name}} on remotes
+    shell: mysql -u root -p{{mysql_root_password}} < {{remote_name}}
+
+  - name: remove {{base_name}} from remotes
+    file: path={{remote_name}}  state=absent

@@ -1,0 +1,41 @@
+# ansible-playbook apache/vhost.yml -e 'hosts=ansible_test_nodes vhost=generator' --tags 'init' -C
+# ansible-playbook apache/vhost.yml -e 'hosts=ansible_test_nodes vhost=generator' --tags 'disable' -C
+# ansible-playbook apache/vhost.yml -e 'hosts=ansible_test_nodes vhost=generator' --tags 'enable' -C
+# ansible-playbook apache/vhost.yml -e 'hosts=ansible_test_nodes vhost=generator' --tags 'config' -C
+
+- name: CREATE VIRTUAL HOST. ITS ENABLE AND DISABLE. NEED TO BE RUN lamp/main.yml
+  hosts: $hosts
+  remote_user: root
+
+  tasks:
+  - name: copy vhost config /etc/httpd/sites-available/{{ vhost }}.conf
+    copy: src={{ vhost }}.conf dest=/etc/httpd/sites-available/
+    tags: init
+
+  - name: create vhost directory /var/www/{{ vhost }}
+    file: path=/var/www/{{ vhost }} state=directory
+    tags: init
+
+  - name: add symlink /etc/httpd/sites-enabled/{{ vhost }}.conf
+    file: src=/etc/httpd/sites-available/{{ vhost }}.conf dest=/etc/httpd/sites-enabled/{{ vhost }}.conf state=link
+    notify: reload httpd
+    tags: init
+
+  - name: disable vhost {{ vhost }}
+    file: path=/etc/httpd/sites-enabled/{{ vhost }}.conf state=absent
+    notify: reload httpd
+    tags: disable
+
+  - name: enable vhost {{ vhost }}
+    file: src=/etc/httpd/sites-available/{{ vhost }}.conf dest=/etc/httpd/sites-enabled/{{ vhost }}.conf state=link
+    notify: reload httpd
+    tags: enable
+
+  - name: update vhost config /etc/httpd/sites-available/{{ vhost }}.conf
+    copy: src={{ vhost }}.conf dest=/etc/httpd/sites-available/
+    notify: reload httpd
+    tags: config
+
+  handlers:
+  - name: reload httpd
+    service: name=httpd state=reloaded

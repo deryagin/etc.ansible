@@ -1,0 +1,16 @@
+# ansible-playbook git/branch.yml -e 'hosts=ansible_test_nodes repo=/var/www/generator' -C
+# ansible ansible_test_nodes -m shell -a 'cd /var/www/generator; git branch | grep "\*"' -o
+
+- name: SHOW CURRENT GIT BRANCHES
+  hosts: $hosts
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+  - name: gather list of current branches
+    shell: cd {{repo}}; git branch | grep "\*"
+    register: gitbranch
+
+  - name: show current branches
+    local_action: command echo item
+    with_items: gitbranch.stdout_lines

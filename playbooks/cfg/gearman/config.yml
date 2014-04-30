@@ -1,0 +1,15 @@
+# ansible-playbook gearman/config.yml -e 'hosts=ansible_test_nodes' -C
+
+- name: CONFIG GEARMAND
+  hosts: $hosts
+  remote_user: root
+
+  tasks:
+  - name: copy /etc/sysconfig/gearmand
+    copy: src=gearmand dest=/etc/sysconfig/gearmand
+    notify: reload gearmand
+
+  handlers:
+  - name: reload gearmand
+    service: name=gearmand state=reloaded
+
